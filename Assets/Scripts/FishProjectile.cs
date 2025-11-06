@@ -35,7 +35,11 @@ public class FishProjectile : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            Destroy(other.gameObject);
+            EnemyController enemy = other.GetComponent<EnemyController>();
+            if(enemy != null) {
+                enemy.SendMessage("Die", SendMessageOptions.DontRequireReceiver);
+            }
+            
             Destroy(gameObject);
         }
     }

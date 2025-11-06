@@ -52,7 +52,7 @@ public class PlayerHealth : MonoBehaviour
         if (deathFX != null)
         {
             Debug.Log("Triggering death effect");
-            deathFX.TriggerDeathEffect();
+            deathFX.TriggerDeathEffect(transform.position);
         }
 
         // screen shake
@@ -75,7 +75,14 @@ public class PlayerHealth : MonoBehaviour
 
     private IEnumerator DeathSequence()
     {
-        yield return new WaitForSeconds(1f);
+        // disable enemies scripts entirely to actually get them to stop please
+        EnemyController[] enemies = FindObjectsByType<EnemyController>(FindObjectsSortMode.None);
+        foreach(EnemyController e in enemies) {
+            e.OnPlayerDeath();
+        }
+
+        // show game over screen
+        yield return new WaitForSecondsRealtime(.5f);
         Time.timeScale = 0f;
         if (deathScreen != null)
         {

@@ -2,14 +2,16 @@ using UnityEngine;
 
 public class DeathEffect : MonoBehaviour
 {
-    public GameObject explosionPrefab;
+    [SerializeField] private GameObject explosionPrefab;
 
-    public void TriggerDeathEffect()
+    public void TriggerDeathEffect(Vector3 position)
     {
-        if (explosionPrefab != null)
+        if (explosionPrefab == null)
         {
-            GameObject fx = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-            Destroy(fx, 2f);
+            return;
         }
+
+        GameObject fx = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+        Destroy(fx, 2f);
     }
 }

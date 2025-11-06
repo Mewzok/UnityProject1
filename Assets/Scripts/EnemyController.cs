@@ -5,6 +5,10 @@ public class EnemyController : MonoBehaviour
     public float moveSpeed = 3f;
     private Transform player;
     private Animator animator;
+    private bool isDead = false;
+    private bool playerDead = false;
+
+    private DeathEffect deathEffect;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,12 +20,13 @@ public class EnemyController : MonoBehaviour
         }
 
         animator = GetComponent<Animator>();
+        deathEffect = GetComponent<DeathEffect>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (player == null)
+        if (isDead || playerDead || player == null)
         {
             return;
         }
@@ -30,16 +35,46 @@ public class EnemyController : MonoBehaviour
         direction.y = 0f;
 
         // move enemy
-        transform.position += direction * moveSpeed * Time.deltaTime;
+        if(!playerDead) {
+            transform.position += direction * moveSpeed * Time.deltaTime;
 
-        // rotate towards player
-        if (direction.sqrMagnitude > 0f)
-        {
-            transform.rotation = Quaternion.LookRotation(direction);
+            // rotate towards player
+            if (direction.sqrMagnitude > 0f) {
+                transform.rotation = Quaternion.LookRotation(direction);
+            }
+
+            // walk animation
+            animator.SetBool("isWalking", direction.sqrMagnitude > 0.01f);
+        }
+    }
+
+    void Die() {
+        if(isDead) {
+            return;
+        }
+        isDead =  true;
+
+        if(deathEffect != null) {
+            deathEffect.TriggerDeathEffect(transform.position);
         }
 
-        // walk animation
-        bool isMoving = direction.sqrMagnitude > 0.01f;
-        animator.SetBool("isWalking", isMoving);
+        CameraController cam = Camera.main.GetComponent<CameraController>();
+        if(cam != null) {
+            cam.TriggerShake(0.2f, 0.1f);
+        }
+
+        Destroy(gameObject);
+    }
+
+    public void OnPlayerDeath() {
+        Debug.Log("Player died, freezing enemy: " + gameObject.name);
+
+        playerDead = true;
+        moveSpeed = 0f;
+
+        if(animator != null) {
+            animator.applyRootMotion = false;
+            animator.enabled = false;
+        }
     }
 }

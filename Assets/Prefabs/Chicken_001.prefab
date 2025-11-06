@@ -1241,6 +1241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 4
+  deathEffectPrefab: {fileID: 7947261879418092360, guid: 7202a4e5b5fa6624f881ea9f94857d26, type: 3}
 --- !u!65 &7156960768141812754
 BoxCollider:
   m_ObjectHideFlags: 0
