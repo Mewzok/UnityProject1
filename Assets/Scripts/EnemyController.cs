@@ -3,6 +3,7 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     public float moveSpeed = 3f;
+    public int pointValue = 1;
     private Transform player;
     private Animator animator;
     private bool isDead = false;
@@ -64,11 +65,14 @@ public class EnemyController : MonoBehaviour
         }
 
         Destroy(gameObject);
+
+        // add points
+        if(PointManager.Instance != null) {
+            PointManager.Instance.AddPoints(pointValue);
+        }
     }
 
     public void OnPlayerDeath() {
-        Debug.Log("Player died, freezing enemy: " + gameObject.name);
-
         playerDead = true;
         moveSpeed = 0f;
 

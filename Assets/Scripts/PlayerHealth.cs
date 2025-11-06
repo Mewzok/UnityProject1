@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using TMPro;
 
 public class PlayerHealth : MonoBehaviour
 {
     public GameObject deathScreen;
     private bool isDead = false;
+
+    public TextMeshProUGUI goPointsText;
 
     void OnTriggerEnter(Collider other)
     {
@@ -51,7 +54,6 @@ public class PlayerHealth : MonoBehaviour
         var deathFX = GetComponent<DeathEffect>();
         if (deathFX != null)
         {
-            Debug.Log("Triggering death effect");
             deathFX.TriggerDeathEffect(transform.position);
         }
 
@@ -59,7 +61,6 @@ public class PlayerHealth : MonoBehaviour
         CameraController cam = Camera.main.GetComponent<CameraController>();
         if (cam != null)
         {
-            Debug.Log("Triggering shake effect");
             StartCoroutine(cam.Shake(0.3f, 0.15f));
         }
 
@@ -86,7 +87,17 @@ public class PlayerHealth : MonoBehaviour
         Time.timeScale = 0f;
         if (deathScreen != null)
         {
+            // hide in game points ui
+            if(PointManager.Instance.pointsText != null) {
+                PointManager.Instance.pointsText.gameObject.SetActive(false);
+            }
+
             deathScreen.SetActive(true);
+
+            if(goPointsText != null) {
+                Debug.Log("goPointsText is not null");
+                goPointsText.text = $"Total Score: {PointManager.Instance.totalPoints}";
+            }
         }
     }
 
